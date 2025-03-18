@@ -33,7 +33,10 @@
           </select>
         </div>
       </div>
-      <div class="row" id="productList">
+      <div
+        class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5"
+        id="productList"
+      >
         <!-- Products will be populated dynamically -->
       </div>
     </div>
@@ -55,7 +58,7 @@
           productList.innerHTML = "";
           products.forEach((product) => {
             const col = document.createElement("div");
-            col.className = "col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-4";
+            col.className = "mb-4";
             col.innerHTML = `
                 <div class="card">
                     <img src="${product.thumbnail}" class="card-img-top" alt="${product.title}">
@@ -106,7 +109,7 @@
 
         function sortProducts(products) {
           const sortValue = sortBy.value;
-          let sortedProducts = [...products];
+          let sortedProducts = products;
 
           if (sortValue === "lowToHigh") {
             sortedProducts.sort((a, b) => a.price - b.price);
