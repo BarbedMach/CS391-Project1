@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#">Products</a>
+        <div class="ml-auto">
+          <a href="#" class="btn btn-outline-dark">
+            <i class="fas fa-shopping-cart"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-4 mb-4">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-3 col-12">
+          <label for="categoryFilter" class="form-label small text-muted"
+            >Category</label
+          >
+          <select class="form-select" id="categoryFilter">
+            <!-- Categories will be added when products are fetched.-->
+          </select>
+        </div>
+        <div class="col-md-3 col-12">
+          <label for="searchFilter" class="form-label small text-muted"
+            >Search</label
+          >
+          <input type="text" class="form-control" id="searchFilter" />
+        </div>
+        <div class="col-md-3 col-12">
+          <label
+            for="applyFilters"
+            class="form-label small text-muted invisible"
+            >placeholder_text
+          </label>
+          <button class="btn btn-dark w-100" id="applyFilters">
+            Apply Filter
+          </button>
+        </div>
+        <div class="col-md-3 col-12">
+          <label for="sortBy" class="form-label small text-muted"
+            >Sort By</label
+          >
+          <select class="form-select" id="sortBy">
+            <option value="price_asc">Ascending Price</option>
+            <option value="price_desc">Descending Price</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-4">
+      <div
+        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4"
+        id="productGrid"
+      >
+        <!-- Products will be added when fetched.-->
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="Products.js"></script>
+    <script type="text/javascript">
+      const productGrid = document.getElementById("productGrid");
+      const categoryFilter = document.getElementById("categoryFilter");
+      const searchFilter = document.getElementById("searchFilter");
+      const sortBy = document.getElementById("sortBy");
+      const applyFilters = document.getElementById("applyFilters");
+
+      function capitalizeFirstLetters(string) {
+        return string
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+      }
+
+      function populateCategories() {
+        const allOption = document.createElement("option");
+        allOption.value = "";
+        allOption.textContent = "All Categories";
+        categoryFilter.appendChild(allOption);
+
+        let categories = new Set();
+
+        products.forEach((product) => categories.add(product.category));
+
+        categories.forEach((category) => {
+          const option = document.createElement("option");
+          option.value = category;
+          option.textContent = capitalizeFirstLetters(category);
+          categoryFilter.appendChild(option);
+        });
+      }
+
+      function displayProducts(productsToDisplay) {
+        productGrid.innerHTML = "";
+
+        productsToDisplay.forEach((product) => {
+          const productCard = document.createElement("div");
+          productCard.className = "col mb-4";
+
+          productCard.innerHTML = `
+                    <div class="card h-100">
+                        <a href="product-detail.html?id=${product.id}">
+                            <img src="${
+                              product.thumbnail
+                            }" class="card-img-top product-img" alt="${
+            product.title
+          }">
+                        </a>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${product.title}</h5>
+                            <p class="card-text text-primary text-center fw-bold">$${product.price.toFixed(
+                              2
+                            )}</p>
+                            <div class="mt-auto">
+                        <a href="product-detail.html?id=${product.id}" 
+                           class="btn btn-dark w-100 mt-2">
+                            View Details
+                        </a>
+                    </div>
+                        </div>
+                    </div>
+                `;
+
+          productGrid.appendChild(productCard);
+        });
+      }
+
+      function redisplay() {
+        const selectedCategory = categoryFilter.value;
+        const searchTerm = searchFilter.value.toLowerCase();
+        const sortOption = sortBy.value;
+
+        let filteredProducts = products.filter((product) => {
+          const categoryMatch =
+            selectedCategory === "" || product.category === selectedCategory;
+
+          const searchMatch =
+            product.title.toLowerCase().includes(searchTerm) ||
+            product.description.toLowerCase().includes(searchTerm);
+
+          return categoryMatch && searchMatch;
+        });
+
+        filteredProducts.sort((a, b) => {
+          switch (sortOption) {
+            case "price_asc":
+              return a.price - b.price;
+            case "price_desc":
+              return b.price - a.price;
+            case "title_asc":
+              return a.title.localeCompare(b.title);
+            case "title_desc":
+              return b.title.localeCompare(a.title);
+            default:
+              return 0;
+          }
+        });
+
+        displayProducts(filteredProducts);
+      }
+
+      function init() {
+        populateCategories();
+
+        applyFilters.addEventListener("click", redisplay);
+        sortBy.addEventListener("change", redisplay);
+        searchFilter.addEventListener("keyup", (e) => {
+          if (e.key === "Enter") {
+            redisplay();
+          }
+        });
+
+        displayProducts(products);
+      }
+
+      init();
+    </script>
+  </body>
+</html>
