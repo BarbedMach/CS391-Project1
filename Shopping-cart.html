@@ -137,25 +137,26 @@
                         >
                           <i class="fas fa-minus"></i>
                         </button>
-                        <input 
-                          type="text" 
-                          class="form-control quantity-value" 
-                          value="${item.quantity}" 
-                          readonly
-                        >
+                        <button 
+              class="btn btn-outline-secondary quantity-display" 
+              disabled
+              tabindex="-1"
+            >
+              ${item.quantity}
+            </button>
                         <button 
                           class="btn btn-outline-secondary quantity-btn plus-btn m-1" 
                           data-product-id="${productId}"
                         >
                           <i class="fas fa-plus"></i>
                         </button>
-                      </div>
-                      <button 
+                        <button 
                         class="btn btn-outline-danger remove-btn m-1" 
                         data-product-id="${productId}"
                       >
                         <i class="fas fa-trash"></i>
                       </button>
+                      </div>
                     </div>
                   </div>
                 `;
