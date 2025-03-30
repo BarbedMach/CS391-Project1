@@ -19,44 +19,203 @@
           <div class="ms-auto">
             <a href="Shopping-cart.html" class="btn btn-outline-dark">
               <i class="fas fa-shopping-cart"></i>
-              <span id="totalAmount"></span>
+              <span id="navTotalAmount"></span>
             </a>
           </div>
         </div>
     </nav>
 
+    <div class="container py-4">
+        <h1 class="mb-4">Your Shopping Cart</h1>
+        
+        <div class="row">
+          <div class="col-lg-10">
+            <div id="cartItemsContainer">
+              <!-- Cart items will be dynamically inserted here -->
+            </div>
+            
+            <div id="emptyCartMessage" class="text-center py-5" style="display: none;">
+              <h3>Your cart is empty</h3>
+              <a href="Products.html" class="btn btn-primary mt-3">Continue Shopping</a>
+            </div>
+          </div>
+          
+          <div class="col-lg-2">
+            <div class="card checkout-card">
+              <div class="card-body">
+                <h5 class="card-title">Order Summary</h5>
+                <p class="card-text">Total: <span id="checkoutTotal">$0.00</span></p>
+                <button 
+                  id="proceedToCheckout" 
+                  class="btn btn-success w-100"
+                  disabled
+                >
+                  Proceed to Checkout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script type="text/javascript" src="Products.js"></script>
         <script>
+            // Shopping Cart Functions
             function getCart() {
-        const cart = localStorage.getItem("shoppingCart");
-        return cart ? JSON.parse(cart) : {};
-      }
-
-      function updateTotalAmount() {
-        const cart = getCart();
-        let total = 0;
-
-        for (const [productId, item] of Object.entries(cart)) {
-          const product = products.find((p) => p.id === parseInt(productId));
-          if (product) {
-            total += product.price * item.quantity;
-          }
-        }
-
-        document.getElementById("totalAmount").textContent = `$${total.toFixed(
-          2
-        )}`;
-      }
-
-      function saveCart(cart) {
-        localStorage.setItem("shoppingCart", JSON.stringify(cart));
-        updateTotalAmount();
-      }
-
-      window.onload = () => {
-        updateTotalAmount();
-      }
-        </script>
+              const cart = localStorage.getItem('shoppingCart');
+              return cart ? JSON.parse(cart) : {};
+            }
+      
+            function saveCart(cart) {
+              localStorage.setItem('shoppingCart', JSON.stringify(cart));
+              updateCartDisplay();
+            }
+      
+            function calculateTotal() {
+              const cart = getCart();
+              let total = 0;
+              
+              for (const [productId, item] of Object.entries(cart)) {
+                const product = products.find(p => p.id === parseInt(productId));
+                if (product) {
+                  total += product.price * item.quantity;
+                }
+              }
+              
+              return total;
+            }
+      
+            function updateCartDisplay() {
+              const cart = getCart();
+              const cartItemsContainer = document.getElementById('cartItemsContainer');
+              const emptyCartMessage = document.getElementById('emptyCartMessage');
+              const proceedToCheckout = document.getElementById('proceedToCheckout');
+              const total = calculateTotal();
+              
+              // Update navigation total
+              document.getElementById('navTotalAmount').textContent = `$${total.toFixed(2)}`;
+              document.getElementById('checkoutTotal').textContent = `$${total.toFixed(2)}`;
+              
+              // Enable/disable checkout button
+              document.getElementById('proceedToCheckout').disabled = total === 0;
+              
+              // Clear existing items
+              cartItemsContainer.innerHTML = '';
+              
+              if (Object.keys(cart).length === 0) {
+                emptyCartMessage.style.display = 'block';
+                return;
+              } else {
+                emptyCartMessage.style.display = 'none';
+              }
+              
+              // Add each cart item to the display
+              for (const [productId, item] of Object.entries(cart)) {
+                const product = products.find(p => p.id === parseInt(productId));
+                if (!product) continue;
+                
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item row';
+                itemElement.innerHTML = `
+                  <div class="col-md-2">
+                    <img src="${product.thumbnail}" alt="${product.title}" class="img-thumbnail">
+                  </div>
+                  <div class="col-md-6">
+                    <h5>${product.title}</h5>
+                    <p class="text-muted">$${product.price.toFixed(2)}</p>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="quantity-control">
+                        <button 
+                          class="btn btn-outline-secondary quantity-btn minus-btn" 
+                          data-product-id="${productId}"
+                        >
+                          <i class="fas fa-minus"></i>
+                        </button>
+                        <input 
+                          type="text" 
+                          class="form-control quantity-value" 
+                          value="${item.quantity}" 
+                          readonly
+                        >
+                        <button 
+                          class="btn btn-outline-secondary quantity-btn plus-btn" 
+                          data-product-id="${productId}"
+                        >
+                          <i class="fas fa-plus"></i>
+                        </button>
+                      </div>
+                      <button 
+                        class="btn btn-outline-danger remove-btn" 
+                        data-product-id="${productId}"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                `;
+                
+                cartItemsContainer.appendChild(itemElement);
+              }
+              
+              // Add event listeners to all buttons
+              document.querySelectorAll('.minus-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                  const productId = this.getAttribute('data-product-id');
+                  updateQuantity(productId, -1);
+                });
+              });
+              
+              document.querySelectorAll('.plus-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                  const productId = this.getAttribute('data-product-id');
+                  updateQuantity(productId, 1);
+                });
+              });
+              
+              document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                  const productId = this.getAttribute('data-product-id');
+                  removeItem(productId);
+                });
+              });
+            }
+            
+            function updateQuantity(productId, change) {
+              const cart = getCart();
+              if (!cart[productId]) return;
+              
+              const newQuantity = cart[productId].quantity + change;
+              
+              if (newQuantity <= 0) {
+                removeItem(productId);
+              } else {
+                cart[productId].quantity = newQuantity;
+                saveCart(cart);
+              }
+            }
+            
+            function removeItem(productId) {
+              const cart = getCart();
+              delete cart[productId];
+              saveCart(cart);
+            }
+            
+            // Initialize the page
+            window.onload = () => {
+              updateCartDisplay();
+              
+              // Proceed to checkout button
+              document.getElementById('proceedToCheckout').addEventListener('click', function() {
+                if (confirm('Are you sure you want to proceed to checkout?')) {
+                  localStorage.removeItem('shoppingCart');
+                  updateCartDisplay();
+                  alert('Thank you for your purchase!');
+                }
+              });
+            };
+          </script>
   </body>
 </html>
