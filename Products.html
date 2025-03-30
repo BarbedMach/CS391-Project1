@@ -16,10 +16,11 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="#">Products</a>
+        <a class="navbar-brand" href="Products.html">Products</a>
         <div class="ms-auto">
-          <a href="shopping-cart.html" class="btn btn-outline-dark">
+          <a href="Shopping-cart.html" class="btn btn-outline-dark">
             <i class="fas fa-shopping-cart"></i>
+            <span id="totalAmount"></span>
           </a>
         </div>
       </div>
@@ -61,7 +62,35 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="Products.js"></script>
     <script>
+      function getCart() {
+        const cart = localStorage.getItem("shoppingCart");
+        return cart ? JSON.parse(cart) : {};
+      }
+
+      function updateTotalAmount() {
+        const cart = getCart();
+        let total = 0;
+
+        for (const [productId, item] of Object.entries(cart)) {
+          const product = products.find((p) => p.id === parseInt(productId));
+          if (product) {
+            total += product.price * item.quantity;
+          }
+        }
+
+        document.getElementById("totalAmount").textContent = `$${total.toFixed(
+          2
+        )}`;
+      }
+
+      function saveCart(cart) {
+        localStorage.setItem("shoppingCart", JSON.stringify(cart));
+        updateTotalAmount();
+      }
+
       window.onload = function () {
+        updateTotalAmount();
+
         const productGrid = document.getElementById("productGrid");
         const categoryFilter = document.getElementById("categoryFilter");
         const searchFilter = document.getElementById("searchFilter");
@@ -105,6 +134,8 @@
             </div>`
             )
             .join("");
+
+          updateTotalAmount();
         }
 
         function redisplay() {
