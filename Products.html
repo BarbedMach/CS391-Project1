@@ -1,184 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="Products.html">Products</a>
+        <div class="ms-auto">
+          <a href="Shopping-cart.html" class="btn btn-outline-dark">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="totalAmount"></span>
+          </a>
+        </div>
+      </div>
+    </nav>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Products</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-</head>
+    <div class="container mt-4 mb-4">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-3 col-12">
+          <label class="form-label small text-muted">Category</label>
+          <select class="form-select" id="categoryFilter"></select>
+        </div>
+        <div class="col-md-3 col-12">
+          <label class="form-label small text-muted">Search</label>
+          <input type="text" class="form-control" id="searchFilter" />
+        </div>
+        <div class="col-md-3 col-12">
+          <label class="form-label small text-muted invisible">Action</label>
+          <button class="btn btn-dark w-100" id="applyFilters">
+            Apply Filter
+          </button>
+        </div>
+        <div class="col-md-3 col-12">
+          <label class="form-label small text-muted">Sort By</label>
+          <select class="form-select" id="sortBy">
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+    </div>
 
-<body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      <a class="navbar-brand" href="Products.html">Products</a>
-      <div class="ms-auto">
-        <a href="Shopping-cart.html" class="btn btn-outline-dark">
-          <i class="fas fa-shopping-cart"></i>
-          <span id="totalAmount"></span>
-        </a>
-      </div>
+      <div
+        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4"
+        id="productGrid"
+      ></div>
     </div>
-  </nav>
 
-  <div class="container mt-4 mb-4">
-    <div class="row g-2 align-items-center">
-      <div class="col-md-3 col-12">
-        <label class="form-label small text-muted">Category</label>
-        <select class="form-select" id="categoryFilter"></select>
-      </div>
-      <div class="col-md-3 col-12">
-        <label class="form-label small text-muted">Search</label>
-        <input type="text" class="form-control" id="searchFilter" />
-      </div>
-      <div class="col-md-3 col-12">
-        <label class="form-label small text-muted invisible">Action</label>
-        <button class="btn btn-dark w-100" id="applyFilters">
-          Apply Filter
-        </button>
-      </div>
-      <div class="col-md-3 col-12">
-        <label class="form-label small text-muted">Sort By</label>
-        <select class="form-select" id="sortBy">
-          <option value="price_asc">Price: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
-        </select>
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4" id="productGrid"></div>
-  </div>
-
-  <footer class="bg-light py-4 mt-5">
-    <div class="container">
-      <div class="row">
-        <h5 class="text-center">Authors</h5>
-        <div class="col-md-6">
-          <p class="text-muted text-center">Furkan</p>
+    <footer class="bg-light py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <h5 class="text-center">Authors</h5>
+          <div class="col-md-6">
+            <p class="text-muted text-center">Furkan</p>
+          </div>
+          <div class="col-md-6">
+            <p class="text-muted text-center">Selim</p>
+          </div>
         </div>
-        <div class="col-md-6">
-          <p class="text-muted text-center">Selim</p>
+        <hr class="my-4" />
+        <div class="row">
+          <div class="col-12 text-center">
+            <p class="text-muted mb-0">&copy; CS-391 2025 Spring Project 1</p>
+          </div>
         </div>
       </div>
-      <hr class="my-4" />
-      <div class="row">
-        <div class="col-12 text-center">
-          <p class="text-muted mb-0">&copy; CS-391 2025 Spring Project 1</p>
-        </div>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script type="text/javascript" src="Products.js"></script>
-  <script>
-    function getCart() {
-      const cart = localStorage.getItem("shoppingCart");
-      return cart ? JSON.parse(cart) : {};
-    }
-
-    function updateTotalAmount() {
-      const cart = getCart();
-      let total = 0;
-
-      for (const [productId, item] of Object.entries(cart)) {
-        const product = products.find((p) => p.id === parseInt(productId));
-        if (product) {
-          total += product.price * item.quantity;
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="Products.js"></script>
+    <script>
+      // Cart handling functions
+      function getCart() {
+        try {
+          const cart = localStorage.getItem("shoppingCart");
+          return cart ? JSON.parse(cart) : {};
+        } catch (error) {
+          console.error("Error reading cart from localStorage:", error);
+          return {};
         }
       }
 
-      document.getElementById("totalAmount").textContent = `$${total.toFixed(2)}`;
-    }
+      function updateTotalAmount() {
+        try {
+          const cart = getCart();
+          let total = 0;
+          const totalAmountEl = document.getElementById("totalAmount");
+          
+          if (!totalAmountEl) return;
 
-    function saveCart(cart) {
-      localStorage.setItem("shoppingCart", JSON.stringify(cart));
-      updateTotalAmount();
-    }
+          for (const [productId, item] of Object.entries(cart)) {
+            const product = products ? products.find((p) => p.id === parseInt(productId)) : null;
+            if (product) {
+              total += product.price * item.quantity;
+            }
+          }
 
-    window.onload = function () {
-      updateTotalAmount();
-
-      const productGrid = document.getElementById("productGrid");
-      const categoryFilter = document.getElementById("categoryFilter");
-      const searchFilter = document.getElementById("searchFilter");
-      const sortBy = document.getElementById("sortBy");
-      const applyFilters = document.getElementById("applyFilters");
-
-      function capitalize(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
+          totalAmountEl.textContent = `$${total.toFixed(2)}`;
+        } catch (error) {
+          console.error("Error updating total amount:", error);
+        }
       }
 
-      function populateCategories() {
-        categoryFilter.innerHTML = `<option value="">All Categories</option>`;
-        const categories = new Set(products.map((p) => p.category));
-        categories.forEach((cat) => {
-          const opt = document.createElement("option");
-          opt.value = cat;
-          opt.textContent = capitalize(cat);
-          categoryFilter.appendChild(opt);
-        });
+      function saveCart(cart) {
+        try {
+          localStorage.setItem("shoppingCart", JSON.stringify(cart));
+          updateTotalAmount();
+        } catch (error) {
+          console.error("Error saving cart to localStorage:", error);
+          alert("Failed to save cart. Please try again.");
+        }
       }
 
-      function displayProducts(list) {
-        productGrid.innerHTML = list
-          .map(
-            (p) => `
-            <div class="col">
-              <div class="card h-100">
-                <a href="Product-detail.html?id=${p.id}">
-                  <img src="${p.thumbnail}" class="card-img-top" alt="${p.title}" />
-                </a>
-                <div class="card-body d-flex flex-column">
-                  <h6>${p.title}</h6>
-                  <p class="text-primary fw-bold">$${p.price.toFixed(2)}</p>
-                  <a href="Product-detail.html?id=${p.id}" class="btn btn-dark mt-auto">View Details</a>
-                </div>
-              </div>
-            </div>`
-          )
-          .join("");
+      window.onload = function () {
+        try {
+          if (!products || !Array.isArray(products)) {
+            console.error("Products data is not available or invalid");
+            return;
+          }
 
-        updateTotalAmount();
-      }
+          // Cache DOM elements
+          const productGrid = document.getElementById("productGrid");
+          const categoryFilter = document.getElementById("categoryFilter");
+          const searchFilter = document.getElementById("searchFilter");
+          const sortBy = document.getElementById("sortBy");
+          const applyFilters = document.getElementById("applyFilters");
+          
+          // Verify DOM elements exist
+          if (!productGrid || !categoryFilter || !searchFilter || !sortBy || !applyFilters) {
+            console.error("Required DOM elements not found");
+            return;
+          }
 
-      function redisplay() {
-        let filtered = products.filter(
-          (p) =>
-            (!categoryFilter.value || p.category === categoryFilter.value) &&
-            (!searchFilter.value ||
-              p.title.toLowerCase().includes(searchFilter.value.toLowerCase()) ||
-              p.description.toLowerCase().includes(searchFilter.value.toLowerCase()))
-        );
+          updateTotalAmount();
 
-        if (sortBy.value === "price_asc")
-          filtered.sort((a, b) => a.price - b.price);
-        else if (sortBy.value === "price_desc")
-          filtered.sort((a, b) => b.price - a.price);
+          function capitalize(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+          }
 
-        displayProducts(filtered);
-      }
+          function populateCategories() {
+            categoryFilter.innerHTML = `<option value="">All Categories</option>`;
+            
+            try {
+              const categories = new Set(products.map((p) => p.category));
+              categories.forEach((cat) => {
+                if (cat) { // Make sure category is not null or undefined
+                  const opt = document.createElement("option");
+                  opt.value = cat;
+                  opt.textContent = capitalize(cat);
+                  categoryFilter.appendChild(opt);
+                }
+              });
+            } catch (error) {
+              console.error("Error populating categories:", error);
+            }
+          }
 
-      categoryFilter.addEventListener("change", () => {
-        searchFilter.value = "";
-        sortBy.value = "";
-        redisplay();
-      });
+          function displayProducts(list) {
+            try {
+              if (!list || !Array.isArray(list)) {
+                console.error("Invalid product list");
+                return;
+              }
+              
+              productGrid.innerHTML = list
+                .map(
+                  (p) => {
+                    if (!p) return '';
+                    
+                    return `
+                <div class="col">
+                  <div class="card h-100">
+                    <a href="Product-detail.html?id=${p.id}">
+                      <img src="${p.thumbnail || ''}" class="card-img-top" alt="${p.title || 'Product'}" />
+                    </a>
+                    <div class="card-body d-flex flex-column">
+                      <h6>${p.title || 'Untitled Product'}</h6>
+                      <p class="text-primary fw-bold">$${(p.price || 0).toFixed(2)}</p>
+                      <a href="Product-detail.html?id=${p.id}" class="btn btn-dark mt-auto">View Details</a>
+                    </div>
+                  </div>
+                </div>`;
+                  }
+                )
+                .join("");
 
-      applyFilters.addEventListener("click", redisplay);
-      sortBy.addEventListener("change", redisplay);
+              updateTotalAmount();
+            } catch (error) {
+              console.error("Error displaying products:", error);
+            }
+          }
 
-      searchFilter.addEventListener("keyup", (e) => {
-        if (e.key === "Enter") redisplay();
-      });
+          function redisplay() {
+            try {
+              let filtered = products.filter(
+                (p) =>
+                  (!categoryFilter.value || p.category === categoryFilter.value) &&
+                  (!searchFilter.value ||
+                    (p.title && p.title.toLowerCase().includes(searchFilter.value.toLowerCase())) ||
+                    (p.description && p.description.toLowerCase().includes(searchFilter.value.toLowerCase())))
+              );
 
-      populateCategories();
-      displayProducts(products);
-    };
-  </script>
-</body>
+              if (sortBy.value === "price_asc")
+                filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+              else if (sortBy.value === "price_desc")
+                filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
 
+              displayProducts(filtered);
+            } catch (error) {
+              console.error("Error filtering/sorting products:", error);
+            }
+          }
+
+          // Event delegation for the product grid
+          productGrid.addEventListener("click", (e) => {
+            const viewDetailsBtn = e.target.closest("a.btn");
+            if (viewDetailsBtn) {
+              // Could add custom handling here if needed
+            }
+          });
+
+          // Filter and sort event listeners
+          categoryFilter.addEventListener("change", () => {
+            searchFilter.value = "";
+            sortBy.value = "price_asc"; // Default to low-to-high
+            redisplay();
+          });
+
+          applyFilters.addEventListener("click", redisplay);
+          sortBy.addEventListener("change", redisplay);
+
+          searchFilter.addEventListener("keyup", (e) => {
+            if (e.key === "Enter") redisplay();
+          });
+
+          // Initialize page
+          populateCategories();
+          displayProducts(products);
+        } catch (error) {
+          console.error("Error initializing products page:", error);
+          document.body.innerHTML = `<div class="container mt-5"><div class="alert alert-danger">Error loading products. Please try refreshing the page.</div></div>`;
+        }
+      };
+    </script>
+  </body>
 </html>

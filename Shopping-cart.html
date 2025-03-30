@@ -1,230 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="title">Shopping Cart</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-</head>
-
-<body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-      <a class="navbar-brand" href="Products.html">Products</a>
-      <div class="ms-auto">
-        <a href="Shopping-cart.html" class="btn btn-outline-dark">
-          <i class="fas fa-shopping-cart"></i>
-          <span id="navTotalAmount"></span>
-        </a>
-      </div>
-    </div>
-  </nav>
-
-  <div class="container py-4">
-    <h1 class="mb-4">Your Shopping Cart</h1>
-
-    <div class="row">
-      <div class="col-lg-8">
-        <div id="cartItemsContainer">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="title">Shopping Cart</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+          <a class="navbar-brand" href="Products.html">Products</a>
+          <div class="ms-auto">
+            <a href="Shopping-cart.html" class="btn btn-outline-dark">
+              <i class="fas fa-shopping-cart"></i>
+              <span id="navTotalAmount"></span>
+            </a>
+          </div>
         </div>
+    </nav>
 
-        <div id="emptyCartMessage" class="text-center py-5" style="display: none;">
-          <h3>Your cart is empty</h3>
-          <a href="Products.html" class="btn btn-dark mt-3 w-100">Continue Shopping</a>
-        </div>
-      </div>
-
-      <div class="col-lg-4">
-        <div class="card checkout-card">
-          <div class="card-body">
-            <h5 class="card-title">Order Summary</h5>
-            <p class="card-text text-muted">Total: <span id="checkoutTotal" class="text-primary">$0.00</span></p>
-            <button id="proceedToCheckout" class="btn btn-dark w-100" disabled>
-              Proceed to Checkout
-            </button>
+    <div class="container py-4">
+        <h1 class="mb-4">Your Shopping Cart</h1>
+        
+        <div class="row">
+          <div class="col-lg-8">
+            <div id="cartItemsContainer">
+            </div>
+            
+            <div id="emptyCartMessage" class="text-center py-5" style="display: none;">
+              <h3>Your cart is empty</h3>
+              <a href="Products.html" class="btn btn-dark mt-3 w-100">Continue Shopping</a>
+            </div>
+          </div>
+          
+          <div class="col-lg-4">
+            <div class="card checkout-card">
+              <div class="card-body">
+                <h5 class="card-title">Order Summary</h5>
+                <p class="card-text text-muted">Total: <span id="checkoutTotal" class="text-primary">$0.00</span></p>
+                <button 
+                  id="proceedToCheckout" 
+                  class="btn btn-dark w-100"
+                  disabled
+                >
+                  Proceed to Checkout
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <footer class="bg-light py-4 mt-5">
-    <div class="container">
-      <div class="row">
-        <h5 class="text-center">Authors</h5>
-        <div class="col-md-6">
-          <p class="text-muted text-center">Furkan</p>
-        </div>
-        <div class="col-md-6">
-          <p class="text-muted text-center">Selim</p>
-        </div>
-      </div>
-      <hr class="my-4" />
-      <div class="row">
-        <div class="col-12 text-center">
-          <p class="text-muted mb-0">&copy; CS-391 2025 Spring Project 1</p>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script type="text/javascript" src="Products.js"></script>
-  <script>
-    function getCart() {
-      const cart = localStorage.getItem('shoppingCart');
-      return cart ? JSON.parse(cart) : {};
-    }
-
-    function saveCart(cart) {
-      localStorage.setItem('shoppingCart', JSON.stringify(cart));
-      updateCartDisplay();
-    }
-
-    function calculateTotal() {
-      const cart = getCart();
-      let total = 0;
-
-      for (const [productId, item] of Object.entries(cart)) {
-        const product = products.find(p => p.id === parseInt(productId));
-        if (product) {
-          total += product.price * item.quantity;
-        }
-      }
-
-      return total;
-    }
-
-    function updateCartDisplay() {
-      const cart = getCart();
-      const cartItemsContainer = document.getElementById('cartItemsContainer');
-      const emptyCartMessage = document.getElementById('emptyCartMessage');
-      const proceedToCheckout = document.getElementById('proceedToCheckout');
-      const total = calculateTotal();
-
-      document.getElementById('navTotalAmount').textContent = `$${total.toFixed(2)}`;
-      document.getElementById('checkoutTotal').textContent = `$${total.toFixed(2)}`;
-
-      proceedToCheckout.disabled = total === 0;
-
-      cartItemsContainer.innerHTML = '';
-
-      if (Object.keys(cart).length === 0) {
-        emptyCartMessage.style.display = 'block';
-        return;
-      } else {
-        emptyCartMessage.style.display = 'none';
-      }
-
-      for (const [productId, item] of Object.entries(cart)) {
-        const product = products.find(p => p.id === parseInt(productId));
-        if (!product) continue;
-
-        const subtotal = (product.price * item.quantity).toFixed(2);
-
-        const itemElement = document.createElement('div');
-        itemElement.className = 'row mt-2 mb-2';
-        itemElement.innerHTML = `
-            <div class="col-md-2">
-              <img src="${product.thumbnail}" alt="${product.title}" class="img-thumbnail">
+      <footer class="bg-light py-4 mt-5">
+        <div class="container">
+          <div class="row">
+            <h5 class="text-center">Authors</h5>
+            <div class="col-md-6">
+              <p class="text-muted text-center">Furkan</p>
             </div>
             <div class="col-md-6">
-              <h5>${product.title}</h5>
-              <p class="text-muted mb-0">Unit Price: $${product.price.toFixed(2)}</p>
-              <p class="text-muted mb-0">Subtotal:<span class="text-primary">$${subtotal}</span></p>
+              <p class="text-muted text-center">Selim</p>
             </div>
-            <div class="col-md-4">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="quantity-control btn-group" role="group">
-                  <button 
-                    class="btn btn-outline-secondary quantity-btn minus-btn m-1" 
-                    data-product-id="${productId}"
-                  >
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <button 
-                    class="btn btn-outline-secondary quantity-display" 
-                    disabled
-                    tabindex="-1"
-                  >
-                    ${item.quantity}
-                  </button>
-                  <button 
-                    class="btn btn-outline-secondary quantity-btn plus-btn m-1" 
-                    data-product-id="${productId}"
-                  >
-                    <i class="fas fa-plus"></i>
-                  </button>
-                  <button 
-                    class="btn btn-outline-danger remove-btn m-1" 
-                    data-product-id="${productId}"
-                  >
-                    <i class="fas fa-trash"></i>
-                  </button>
+          </div>
+          <hr class="my-4" />
+          <div class="row">
+            <div class="col-12 text-center">
+              <p class="text-muted mb-0">&copy; CS-391 2025 Spring Project 1</p>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="Products.js"></script>
+    <script>
+      // Cache DOM elements
+      let cartItemsContainer;
+      let emptyCartMessage;
+      let proceedToCheckout;
+      let navTotalAmount;
+      let checkoutTotal;
+
+      function getCart() {
+        try {
+          const cart = localStorage.getItem('shoppingCart');
+          return cart ? JSON.parse(cart) : {};
+        } catch (error) {
+          console.error("Error reading cart from localStorage:", error);
+          return {};
+        }
+      }
+
+      function saveCart(cart) {
+        try {
+          localStorage.setItem('shoppingCart', JSON.stringify(cart));
+          updateCartDisplay();
+        } catch (error) {
+          console.error("Error saving cart to localStorage:", error);
+          alert("Failed to save cart. Please try again.");
+        }
+      }
+
+      function calculateTotal() {
+        try {
+          const cart = getCart();
+          let total = 0;
+          
+          if (!products || !Array.isArray(products)) {
+            console.error("Products data not available");
+            return 0;
+          }
+          
+          for (const [productId, item] of Object.entries(cart)) {
+            const product = products.find(p => p.id === parseInt(productId));
+            if (product) {
+              total += product.price * item.quantity;
+            }
+          }
+          
+          return total;
+        } catch (error) {
+          console.error("Error calculating total:", error);
+          return 0;
+        }
+      }
+
+      function updateCartDisplay() {
+        try {
+          const cart = getCart();
+          const total = calculateTotal();
+          
+          // Update UI with total
+          if (navTotalAmount) navTotalAmount.textContent = `$${total.toFixed(2)}`;
+          if (checkoutTotal) checkoutTotal.textContent = `$${total.toFixed(2)}`;
+          
+          // Enable/disable checkout button
+          if (proceedToCheckout) proceedToCheckout.disabled = total === 0;
+          
+          // Clear existing items
+          if (!cartItemsContainer) return;
+          cartItemsContainer.innerHTML = '';
+          
+          if (Object.keys(cart).length === 0) {
+            if (emptyCartMessage) emptyCartMessage.style.display = 'block';
+            return;
+          } else {
+            if (emptyCartMessage) emptyCartMessage.style.display = 'none';
+          }
+          
+          // Add each cart item to the display
+          for (const [productId, item] of Object.entries(cart)) {
+            if (!products || !Array.isArray(products)) {
+              console.error("Products data not available");
+              return;
+            }
+            
+            const product = products.find(p => p.id === parseInt(productId));
+            if (!product) continue;
+
+            const subtotal = (product.price * item.quantity).toFixed(2);
+            
+            const itemElement = document.createElement('div');
+            itemElement.className = 'row mt-2 mb-2';
+            itemElement.innerHTML = `
+              <div class="col-md-2">
+                <img src="${product.thumbnail || ''}" alt="${product.title || 'Product'}" class="img-thumbnail">
+              </div>
+              <div class="col-md-6">
+                <h5>${product.title || 'Untitled Product'}</h5>
+                <p class="text-muted mb-0">Unit Price: $${(product.price || 0).toFixed(2)}</p>
+                <p class="text-muted mb-0">Subtotal:<span class="text-primary">$${subtotal}</span></p>
+              </div>
+              <div class="col-md-4">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="quantity-control btn-group" role="group">
+                    <button 
+                      class="btn btn-outline-secondary quantity-btn minus-btn m-1" 
+                      data-product-id="${productId}"
+                    >
+                      <i class="fas fa-minus"></i>
+                    </button>
+                    <button 
+                      class="btn btn-outline-secondary quantity-display" 
+                      disabled
+                      tabindex="-1"
+                    >
+                      ${item.quantity}
+                    </button>
+                    <button 
+                      class="btn btn-outline-secondary quantity-btn plus-btn m-1" 
+                      data-product-id="${productId}"
+                    >
+                      <i class="fas fa-plus"></i>
+                    </button>
+                    <button 
+                      class="btn btn-outline-danger remove-btn m-1" 
+                      data-product-id="${productId}"
+                    >
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          `;
-
-        cartItemsContainer.appendChild(itemElement);
-      }
-
-      document.querySelectorAll('.minus-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-          const productId = this.getAttribute('data-product-id');
-          updateQuantity(productId, -1);
-        });
-      });
-
-      document.querySelectorAll('.plus-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-          const productId = this.getAttribute('data-product-id');
-          updateQuantity(productId, 1);
-        });
-      });
-
-      document.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-          const productId = this.getAttribute('data-product-id');
-          removeItem(productId);
-        });
-      });
-    }
-
-    function updateQuantity(productId, change) {
-      const cart = getCart();
-      if (!cart[productId]) return;
-
-      const newQuantity = cart[productId].quantity + change;
-
-      if (newQuantity <= 0) {
-        removeItem(productId);
-      } else {
-        cart[productId].quantity = newQuantity;
-        saveCart(cart);
-      }
-    }
-
-    function removeItem(productId) {
-      const cart = getCart();
-      delete cart[productId];
-      saveCart(cart);
-    }
-
-    window.onload = () => {
-      updateCartDisplay();
-
-      document.getElementById('proceedToCheckout').addEventListener('click', function () {
-        if (confirm('Are you sure you want to proceed to checkout?')) {
-          localStorage.removeItem('shoppingCart');
-          updateCartDisplay();
-          alert('Thank you for your purchase!');
+            `;
+            
+            cartItemsContainer.appendChild(itemElement);
+          }
+        } catch (error) {
+          console.error("Error updating cart display:", error);
         }
-      });
-    };
-  </script>
-</body>
-
+      }
+      
+      function updateQuantity(productId, change) {
+        try {
+          const cart = getCart();
+          if (!cart[productId]) return;
+          
+          const newQuantity = cart[productId].quantity + change;
+          
+          if (newQuantity <= 0) {
+            removeItem(productId);
+          } else if (newQuantity > 100) {
+            // Set maximum quantity to 100
+            cart[productId].quantity = 100;
+            saveCart(cart);
+          } else {
+            cart[productId].quantity = newQuantity;
+            saveCart(cart);
+          }
+        } catch (error) {
+          console.error("Error updating quantity:", error);
+        }
+      }
+      
+      function removeItem(productId) {
+        try {
+          const cart = getCart();
+          delete cart[productId];
+          saveCart(cart);
+        } catch (error) {
+          console.error("Error removing item:", error);
+        }
+      }
+      
+      // Event delegation for cart items
+      function setupEventListeners() {
+        // Use event delegation for cart buttons
+        if (cartItemsContainer) {
+          cartItemsContainer.addEventListener('click', function(event) {
+            const target = event.target;
+            
+            // Find the closest button
+            const button = target.closest('button');
+            if (!button) return;
+            
+            const productId = button.getAttribute('data-product-id');
+            if (!productId) return;
+            
+            if (button.classList.contains('minus-btn')) {
+              updateQuantity(productId, -1);
+            } else if (button.classList.contains('plus-btn')) {
+              updateQuantity(productId, 1);
+            } else if (button.classList.contains('remove-btn')) {
+              removeItem(productId);
+            }
+          });
+        }
+        
+        // Checkout button
+        if (proceedToCheckout) {
+          proceedToCheckout.addEventListener('click', function() {
+            try {
+              if (confirm('Are you sure you want to proceed to checkout?')) {
+                localStorage.removeItem('shoppingCart');
+                updateCartDisplay();
+                alert('Thank you for your purchase!');
+              }
+            } catch (error) {
+              console.error("Error during checkout:", error);
+            }
+          });
+        }
+      }
+      
+      window.onload = () => {
+        try {
+          // Initialize cached DOM elements
+          cartItemsContainer = document.getElementById('cartItemsContainer');
+          emptyCartMessage = document.getElementById('emptyCartMessage');
+          proceedToCheckout = document.getElementById('proceedToCheckout');
+          navTotalAmount = document.getElementById('navTotalAmount');
+          checkoutTotal = document.getElementById('checkoutTotal');
+          
+          // Check if products data is available
+          if (!products || !Array.isArray(products)) {
+            console.error("Products data not available");
+            if (cartItemsContainer) {
+              cartItemsContainer.innerHTML = '<div class="alert alert-danger">Error loading product data. Please try refreshing the page.</div>';
+            }
+            return;
+          }
+          
+          updateCartDisplay();
+          setupEventListeners();
+        } catch (error) {
+          console.error("Error initializing shopping cart:", error);
+          document.body.innerHTML = `<div class="container mt-5"><div class="alert alert-danger">Error loading shopping cart. Please try refreshing the page.</div></div>`;
+        }
+      };
+    </script>
+  </body>
 </html>
