@@ -1,9 +1,9 @@
-CS 391 Project 1
+# CS 391 Project 1
 
 - Furkan Özdemir
 - Selim Sandal
 
-# Quick Start
+## Quick Start
 1. Download or clone this repository to your machine.  
 2. Open a terminal/command prompt and navigate to the project folder.  
 3. Start a local server (for example, using Python by running `python -m http.server` in the folder).  
